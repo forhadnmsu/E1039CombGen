@@ -1,4 +1,4 @@
-#include "PHG4E1039TrackGen.h"
+#include "PHG4E1039TrackPairGen.h"
 #include <g4main/PHG4Particlev2.h>
 #include <g4main/PHG4InEvent.h>
 #include "g4main/PHG4VtxPoint.h"
@@ -25,7 +25,7 @@
 
 using namespace std;
 
-PHG4E1039TrackGen::PHG4E1039TrackGen(const string &name): 
+PHG4E1039TrackPairGen::PHG4E1039TrackPairGen(const string &name): 
   PHG4ParticleGeneratorBase(name),
   _particle_codes(),
   _particle_names(),
@@ -70,22 +70,22 @@ PHG4E1039TrackGen::PHG4E1039TrackGen(const string &name):
   return;
 }
 
-void PHG4E1039TrackGen::add_particles(const std::string &name, const unsigned int num) {
+void PHG4E1039TrackPairGen::add_particles(const std::string &name, const unsigned int num) {
   _particle_names.push_back(std::make_pair(name,num));
   return;
 }
 
-void PHG4E1039TrackGen::add_particles(const int pid, const unsigned int num) {
+void PHG4E1039TrackPairGen::add_particles(const int pid, const unsigned int num) {
   _particle_codes.push_back(std::make_pair(pid,num));
   return;
 }
 
-void PHG4E1039TrackGen::set_t0(const double t0) {
+void PHG4E1039TrackPairGen::set_t0(const double t0) {
   _t0 = t0;
   return;
 }
 
-void PHG4E1039TrackGen::set_eta_range(const double min, const double max) {
+void PHG4E1039TrackPairGen::set_eta_range(const double min, const double max) {
   if (min > max)
     {
       cout << "not setting eta bc etamin " << min << " > etamax: " << max << endl;
@@ -96,7 +96,7 @@ void PHG4E1039TrackGen::set_eta_range(const double min, const double max) {
   return;
 }
 
-void PHG4E1039TrackGen::set_phi_range(const double min, const double max) {
+void PHG4E1039TrackPairGen::set_phi_range(const double min, const double max) {
   if (min > max)
     {
       cout << "not setting phi bc phimin " << min << " > phimax: " << max << endl;
@@ -107,7 +107,7 @@ void PHG4E1039TrackGen::set_phi_range(const double min, const double max) {
   return;
 }
 
-void PHG4E1039TrackGen::set_pt_range(const double min, const double max, const double pt_gaus_width) {
+void PHG4E1039TrackPairGen::set_pt_range(const double min, const double max, const double pt_gaus_width) {
   if (min > max)
     {
       cout << "not setting pt bc ptmin " << min << " > ptmax: " << max << endl;
@@ -124,7 +124,7 @@ void PHG4E1039TrackGen::set_pt_range(const double min, const double max, const d
   return;
 }
 
-void PHG4E1039TrackGen::set_p_range(const double min, const double max, const double p_gaus_width) {
+void PHG4E1039TrackPairGen::set_p_range(const double min, const double max, const double p_gaus_width) {
   if (min > max)
     {
       cout << "not setting p bc ptmin " << min << " > ptmax: " << max << endl;
@@ -140,46 +140,46 @@ void PHG4E1039TrackGen::set_p_range(const double min, const double max, const do
   return;
 }
 
-void PHG4E1039TrackGen::set_vertex_distribution_function(FUNCTION x, FUNCTION y, FUNCTION z) {
+void PHG4E1039TrackPairGen::set_vertex_distribution_function(FUNCTION x, FUNCTION y, FUNCTION z) {
   _vertex_func_x = x;
   _vertex_func_y = y;
   _vertex_func_z = z;
   return;
 }
 
-void PHG4E1039TrackGen::set_vertex_distribution_mean(const double x, const double y, const double z) {
+void PHG4E1039TrackPairGen::set_vertex_distribution_mean(const double x, const double y, const double z) {
   _vertex_x = x;
   _vertex_y = y;
   _vertex_z = z;
   return;
 }
 
-void PHG4E1039TrackGen::set_vertex_distribution_width(const double x, const double y, const double z) {
+void PHG4E1039TrackPairGen::set_vertex_distribution_width(const double x, const double y, const double z) {
   _vertex_width_x = x;
   _vertex_width_y = y;
   _vertex_width_z = z;
   return;
 }
 
-void PHG4E1039TrackGen::set_existing_vertex_offset_vector(const double x, const double y, const double z) {
+void PHG4E1039TrackPairGen::set_existing_vertex_offset_vector(const double x, const double y, const double z) {
   _vertex_offset_x = x;
   _vertex_offset_y = y;
   _vertex_offset_z = z;
   return;
 }
 
-void PHG4E1039TrackGen::set_vertex_size_function(FUNCTION r) {
+void PHG4E1039TrackPairGen::set_vertex_size_function(FUNCTION r) {
   _vertex_size_func_r = r;
   return;
 }
 
-void PHG4E1039TrackGen::set_vertex_size_parameters(const double mean, const double width) {
+void PHG4E1039TrackPairGen::set_vertex_size_parameters(const double mean, const double width) {
   _vertex_size_mean = mean;
   _vertex_size_width = width;
   return;
 }
 
-int PHG4E1039TrackGen::InitRun(PHCompositeNode *topNode) {
+int PHG4E1039TrackPairGen::InitRun(PHCompositeNode *topNode) {
 
   if ((_vertex_func_x != Uniform)&&(_vertex_func_x != Gaus)) {
     cout << PHWHERE << "::Error - unknown vertex distribution function requested" << endl;
@@ -217,7 +217,7 @@ int PHG4E1039TrackGen::InitRun(PHCompositeNode *topNode) {
   }
 
   if (verbosity > 0) {
-    cout << "================ PHG4E1039TrackGen::InitRun() ======================" << endl;
+    cout << "================ PHG4E1039TrackPairGen::InitRun() ======================" << endl;
     cout << " Random seed = " << get_seed() << endl;
     cout << " Particles:" << endl;
     for (unsigned int i=0; i<_particle_codes.size(); ++i) {
@@ -300,7 +300,7 @@ int PHG4E1039TrackGen::InitRun(PHCompositeNode *topNode) {
 }
 
 
-int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
+int PHG4E1039TrackPairGen::process_event(PHCompositeNode *topNode) {
   if (verbosity > 0) {
     cout << "====================== PHG4SimpleEventGenerator::process_event() =====================" << endl;
     cout <<"PHG4SimpleEventGenerator::process_event - reuse_existing_vertex = "<<reuse_existing_vertex<<endl;
@@ -311,6 +311,7 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
   TLorentzVector muon1;
   TLorentzVector muon2;
   int muon_counter=0;
+  if(! _particle_names.size() ==2) return Fun4AllReturnCodes::ABORTRUN;
   
   for (unsigned int i=0; i<_particle_names.size(); ++i) {
 	  muon_counter++;
@@ -336,22 +337,13 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
 			  << vtx_x<<", "<< vtx_y<<", "<< vtx_z<<" cm"
 			  <<endl;
 	  }
-
-	  //int vtxindex = -1;
-	  //int trackid = -1;
-	  //for (unsigned int i=0; i<_particle_names.size(); ++i) {
-
 	  string pdgname = _particle_names[i].first;
 	  int pdgcode = get_pdgcode(pdgname);
 	  unsigned int nparticles = _particle_names[i].second;
-
-
 	  for (unsigned int j=0; j<nparticles; ++j) {
 
 		  if ((_vertex_size_width > 0.0)||(_vertex_size_mean != 0.0)) {
-
 			  double r = smearvtx(_vertex_size_mean,_vertex_size_width,_vertex_size_func_r);
-
 			  double x = 0.0;
 			  double y = 0.0;
 			  double z = 0.0;
@@ -372,57 +364,37 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
 		  double pz = std::numeric_limits<double>::max();
 		  double angle;
 
-		  if(std::isnan(_px_min)) {
-			  double eta = (_eta_max-_eta_min) * gsl_rng_uniform_pos(RandomGenerator) + _eta_min;
-			  double phi = (_phi_max-_phi_min) * gsl_rng_uniform_pos(RandomGenerator) + _phi_min;
-			  cout << "eta of the particle: "<< eta << endl;
+		  if (muon_counter == 1) {
+		  	do {
+			  px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
+			  py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
+			  pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
+			  muon1.SetXYZM(px, py, pz, 0.1056);
+			}while (!(muon1.Pt() > _pt_min && muon1.Pt() < _pt_max));
+		  }
 
-			  double pt;
-			  if (!std::isnan(_p_min) && !std::isnan(_p_max) && !std::isnan(_p_gaus_width)) {
-				  pt =  ((_p_max-_p_min) * gsl_rng_uniform_pos(RandomGenerator) + _p_min + gsl_ran_gaussian(RandomGenerator, _p_gaus_width)) / cosh(eta);
-			  } else if (!std::isnan(_pt_min) && !std::isnan(_pt_max) && !std::isnan(_pt_gaus_width)) {
-				  pt = (_pt_max-_pt_min) * gsl_rng_uniform_pos(RandomGenerator) + _pt_min + gsl_ran_gaussian(RandomGenerator, _pt_gaus_width);
-			  } else {
-				  cout << PHWHERE << "Error: neither a p range or pt range was specified" << endl;
-				  exit(-1);
-			  }
-
-			  px = pt*cos(phi);
-			  py = pt*sin(phi);
-			  pz = pt*sinh(eta);
-		  } else {
-
-			  if (muon_counter == 1) {
+		  if (muon_counter == 2) {
+			  double angle, xF;
+			  do {
 				  px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
 				  py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
 				  pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
-				  muon1.SetXYZM(px, py, pz, 0.1056);
-				  if (! (muon1.Pt() >= _pt_min && muon1.Pt() < _pt_max)) return Fun4AllReturnCodes::ABORTEVENT;
-			  }
-
-			  if (muon_counter == 2) {
-				  double angle, xF;
-				  do {
-					  px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
-					  py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
-					  pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
-					  muon2.SetXYZM(px, py, pz, 0.1056); 
-					  angle = muon1.Vect().Angle(muon2.Vect()) * (180.0 / M_PI);  // Convert from radians to degrees
-					  Double_t mp = 0.938;
-					  Double_t ebeam = 120.;
-					  TLorentzVector p_beam(0., 0., sqrt(ebeam * ebeam - mp * mp), ebeam);
-					  TLorentzVector p_target(0., 0., 0., mp);
-					  TLorentzVector p_cms = p_beam + p_target;
-					  TLorentzVector p_sum = muon1 + muon2;
-					  double mass = p_sum.M();
-					  Double_t s = p_cms.M2();
-					  TVector3 bv_cms = p_cms.BoostVector();
-					  p_sum.Boost(-bv_cms);
-					  xF = 2. * p_sum.Pz() / TMath::Sqrt(s) / (1. - mass * mass / s);
-				  } while (!(muon2.Pt() > _pt_min && muon2.Pt() < _pt_max) || !(angle < _theta_max) || !(xF < 1.0));
-			  }
+				  muon2.SetXYZM(px, py, pz, 0.1056); 
+				  angle = muon1.Vect().Angle(muon2.Vect()) * (180.0 / M_PI);  // Convert from radians to degrees
+				  Double_t mp = 0.938;
+				  Double_t ebeam = 120.;
+				  TLorentzVector p_beam(0., 0., sqrt(ebeam * ebeam - mp * mp), ebeam);
+				  TLorentzVector p_target(0., 0., 0., mp);
+				  TLorentzVector p_cms = p_beam + p_target;
+				  TLorentzVector p_sum = muon1 + muon2;
+				  double mass = p_sum.M();
+				  Double_t s = p_cms.M2();
+				  TVector3 bv_cms = p_cms.BoostVector();
+				  p_sum.Boost(-bv_cms);
+				  xF = 2. * p_sum.Pz() / TMath::Sqrt(s) / (1. - mass * mass / s);
+			  } while (!(muon2.Pt() > _pt_min && muon2.Pt() < _pt_max) || !(angle < _theta_max) || !(xF < 1.0));
+			  //cout << "pt of the muon2: "<< muon2.Pt() << "angle: "<< angle << endl;
 		  }
-
 		  if (verbosity > 0 &&  muon_counter == 2){
 			  cout << "angle of the muons: "<< angle << endl;
 			  cout << "px 1: " << muon1.Px() << endl;
@@ -467,7 +439,7 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
 }
 
 
-int PHG4E1039TrackGen::End(PHCompositeNode *topNode)
+int PHG4E1039TrackPairGen::End(PHCompositeNode *topNode)
 {
   recoConsts* rc = recoConsts::instance();
   rc->set_IntFlag("PHG4SEG_EVENT_COUNT", _eventcount); // Without "Name()" here to make this variable unique
@@ -475,7 +447,7 @@ int PHG4E1039TrackGen::End(PHCompositeNode *topNode)
   return Fun4AllReturnCodes::EVENT_OK;
 }
 
-void PHG4E1039TrackGen::set_pxpypz_range(const double x_min,
+void PHG4E1039TrackPairGen::set_pxpypz_range(const double x_min,
 		const double x_max, const double y_min, const double y_max,
 		const double z_min, const double z_max) {
 	_px_min = x_min; _px_max = x_max;
@@ -483,13 +455,13 @@ void PHG4E1039TrackGen::set_pxpypz_range(const double x_min,
 	_pz_min = z_min; _pz_max = z_max;
 }
 
-void PHG4E1039TrackGen::set_max_opening_angle(const double x_max){
+void PHG4E1039TrackPairGen::set_max_opening_angle(const double x_max){
          _theta_max = x_max;
 }
 
 
 double
-PHG4E1039TrackGen::smearvtx(const double position, const double width, FUNCTION dist) const
+PHG4E1039TrackPairGen::smearvtx(const double position, const double width, FUNCTION dist) const
 {
   double res = position;
   if (dist == Uniform)

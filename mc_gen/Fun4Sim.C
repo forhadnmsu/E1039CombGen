@@ -125,26 +125,25 @@ int Fun4Sim(const int nevent = 10)
 
 	// multi particle gun
 	if(gen_particle) {
-		PHG4E1039TrackGen *genp = new PHG4E1039TrackGen("MUP");
+		PHG4E1039TrackPairGen *genp = new PHG4E1039TrackPairGen("MUP");
 		genp->set_seed(125);
 		genp->add_particles("mu+", nmu);  // mu+,e+,proton,pi+,Upsilon
 		genp->set_seed(120);
 		genp->add_particles("mu-", nmu);
 		if (SQ_vtx_gen) genp->enableLegacyVtxGen();
 		else{
-			genp->set_vertex_distribution_function(PHG4E1039TrackGen::Uniform,
-					PHG4E1039TrackGen::Uniform,
-					PHG4E1039TrackGen::Uniform);
+			genp->set_vertex_distribution_function(PHG4E1039TrackPairGen::Uniform,
+					PHG4E1039TrackPairGen::Uniform,
+					PHG4E1039TrackPairGen::Uniform);
 			genp->set_vertex_distribution_mean(0.0, 0.0, target_coil_pos_z);
 			genp->set_vertex_distribution_width(0.0, 0.0, 0.0);
-			genp->set_vertex_size_function(PHG4E1039TrackGen::Uniform);
+			genp->set_vertex_size_function(PHG4E1039TrackPairGen::Uniform);
 			genp->set_vertex_size_parameters(0.0, 0.0);
 		}
 		if(FMAGSTR>0)
 			genp->set_pxpypz_range(-6,6, -3,3, 10,100);
 		else
-			genp->set_pxpypz_range(-6.0,6.0, -4,4, 10, 80);
-
+			genp->set_pxpypz_range(-4.0,4.0, -4,4, 10, 80);
 		genp->set_max_opening_angle(2.0);
 		genp->set_pt_range(0.0, 3.0);
 		//genp->Verbosity(1);
@@ -153,17 +152,17 @@ int Fun4Sim(const int nevent = 10)
 
 /*
 	if(gen_particle) {
-		PHG4E1039TrackGen *genm = new PHG4E1039TrackGen("MUM");
+		PHG4E1039TrackPairGen *genm = new PHG4E1039TrackPairGen("MUM");
 		genm->set_seed(12);
 		genm->add_particles("mu-", nmu);  // mu+,e+,proton,pi+,Upsilon
 		if (SQ_vtx_gen) genm->enableLegacyVtxGen();
 		else{
-			genm->set_vertex_distribution_function(PHG4E1039TrackGen::Uniform,
-					PHG4E1039TrackGen::Uniform,
-					PHG4E1039TrackGen::Uniform);
+			genm->set_vertex_distribution_function(PHG4E1039TrackPairGen::Uniform,
+					PHG4E1039TrackPairGen::Uniform,
+					PHG4E1039TrackPairGen::Uniform);
 			genm->set_vertex_distribution_mean(0.0, 0.0, target_coil_pos_z);
 			genm->set_vertex_distribution_width(0.0, 0.0, 0.0);
-			genm->set_vertex_size_function(PHG4E1039TrackGen::Uniform);
+			genm->set_vertex_size_function(PHG4E1039TrackPairGen::Uniform);
 			genm->set_vertex_size_parameters(0.0, 0.0);
 		}
 		if(FMAGSTR>0)

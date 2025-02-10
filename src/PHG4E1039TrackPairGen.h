@@ -1,5 +1,5 @@
-#ifndef PHG4E1039TrackGen_H__
-#define PHG4E1039TrackGen_H__
+#ifndef PHG4E1039TrackPairGen_H__
+#define PHG4E1039TrackPairGen_H__
 
 #include <g4main/PHG4ParticleGeneratorBase.h>
 #include <map>
@@ -15,15 +15,15 @@ class SQMCEvent;
 class SQPrimaryVertexGen;
 
 /// Event generator to generate a set of particles under a condition of the vertex and the momentum.
-class PHG4E1039TrackGen : public PHG4ParticleGeneratorBase {
+class PHG4E1039TrackPairGen : public PHG4ParticleGeneratorBase {
 
 public:
 
   //! supported function distributions
   enum FUNCTION {Uniform,Gaus};
 
-  PHG4E1039TrackGen(const std::string &name="EVTGENERATOR");
-  virtual ~PHG4E1039TrackGen(){}
+  PHG4E1039TrackPairGen(const std::string &name="EVTGENERATOR");
+  virtual ~PHG4E1039TrackPairGen(){}
 
   int InitRun(PHCompositeNode *topNode);
   int process_event(PHCompositeNode *topNode);
