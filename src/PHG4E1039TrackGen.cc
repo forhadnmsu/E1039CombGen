@@ -419,7 +419,7 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
 					  TVector3 bv_cms = p_cms.BoostVector();
 					  p_sum.Boost(-bv_cms);
 					  xF = 2. * p_sum.Pz() / TMath::Sqrt(s) / (1. - mass * mass / s);
-				  } while (!(muon1.Pt() > _pt_min && muon1.Pt() < _pt_max) || !(angle < _theta_max) || !(xF < 1.0));
+				  } while (!(muon2.Pt() > _pt_min && muon2.Pt() < _pt_max) || !(angle < _theta_max) || !(xF < 1.0));
 			  }
 		  }
 
