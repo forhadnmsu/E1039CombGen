@@ -222,11 +222,15 @@ int sourceFlag_= 2;
 
 if(true_mode == true){
 	ResetTrueBranches();
+	ResetHitBranches();
 	for (unsigned int ii = 0; ii < m_vec_trk->size(); ii++) {
 		SQTrack* trk = m_vec_trk->at(ii);
 
 		if(trk->get_charge() >0) processID_ =14;
 		else processID_ =24;
+
+		cout << "processID_ "<< processID_ << endl;
+		cout << "charge: "<< trk->get_charge() << endl;
 
 		gCharge.push_back(trk->get_charge());
 		gvx.push_back(trk->get_pos_vtx().X());
@@ -235,11 +239,12 @@ if(true_mode == true){
 		gpx.push_back(trk->get_mom_vtx().Px());
 		gpy.push_back(trk->get_mom_vtx().Py());
 		gpz.push_back(trk->get_mom_vtx().Pz());
+
 		if (m_hit_vec) {
-			ResetHitBranches();
 			for (int ihit = 0; ihit < m_hit_vec->size(); ++ihit) {
 				SQHit* hit = m_hit_vec->at(ihit);
 				if(hit->get_track_id() != trk->get_track_id()) continue;
+				cout <<"processID_: in the hit loop "<< processID_ <<endl;
 				hitID.push_back(hit->get_hit_id());
 				trackID.push_back(hit->get_track_id());
 				detectorID.push_back(hit->get_detector_id());

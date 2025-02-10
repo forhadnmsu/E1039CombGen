@@ -91,8 +91,6 @@ class DimuAnaRUS: public SubsysReco {
 	//std::vector<bool> hitsInTime;
 	// True track data
 	std::vector<int> gCharge;
-	//std::vector<int> processID;
-	//std::vector<int> sourceFlag;
 	std::vector<double> gvx;
 	std::vector<double> gvy;
 	std::vector<double> gvz;
