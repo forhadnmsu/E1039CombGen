@@ -1,0 +1,1 @@
+The module is a customized version of the PHG4SimpleEventGenerator multiparticle gun. It uses true dimuon kinematics to filter unwanted events and provides better control to generate combinatorial dimuon mass, designed for the E1039 experiment.
