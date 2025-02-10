@@ -313,150 +313,146 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
   int muon_counter=0;
   
   for (unsigned int i=0; i<_particle_names.size(); ++i) {
-  muon_counter++;
+	  muon_counter++;
 
-  if (_legacy_vertexgenerator) {
-    TVector3 vtx = _vertexGen->generateVertex();
-    vtx_x = vtx.X();        
-    vtx_y = vtx.Y();
-    vtx_z = vtx.Z();
-  } else if (!ReuseExistingVertex(topNode)) { // vtx_x, vtx_y and vtx_z are doubles from the base class. common methods modify those, please no private copies. at some point we might rely on them being up to date.
-    // generate a new vertex point
-    vtx_x = smearvtx(_vertex_x,_vertex_width_x,_vertex_func_x);
-    vtx_y = smearvtx(_vertex_y,_vertex_width_y,_vertex_func_y);
-    vtx_z = smearvtx(_vertex_z,_vertex_width_z,_vertex_func_z);
-  } 
-  
-  vtx_x += _vertex_offset_x;
-  vtx_y += _vertex_offset_y;
-  vtx_z += _vertex_offset_z;
+	  if (_legacy_vertexgenerator) {
+		  TVector3 vtx = _vertexGen->generateVertex();
+		  vtx_x = vtx.X();        
+		  vtx_y = vtx.Y();
+		  vtx_z = vtx.Z();
+	  } else if (!ReuseExistingVertex(topNode)) { // vtx_x, vtx_y and vtx_z are doubles from the base class. common methods modify those, please no private copies. at some point we might rely on them being up to date.
+		  // generate a new vertex point
+		  vtx_x = smearvtx(_vertex_x,_vertex_width_x,_vertex_func_x);
+		  vtx_y = smearvtx(_vertex_y,_vertex_width_y,_vertex_func_y);
+		  vtx_z = smearvtx(_vertex_z,_vertex_width_z,_vertex_func_z);
+	  } 
 
-   if (verbosity > 0) {
-  cout <<"PHG4SimpleEventGenerator::process_event - vertex center"<<reuse_existing_vertex
-      << vtx_x<<", "<< vtx_y<<", "<< vtx_z<<" cm"
-      <<endl;
-   }
+	  vtx_x += _vertex_offset_x;
+	  vtx_y += _vertex_offset_y;
+	  vtx_z += _vertex_offset_z;
 
-  //int vtxindex = -1;
-  //int trackid = -1;
-  //for (unsigned int i=0; i<_particle_names.size(); ++i) {
+	  if (verbosity > 0) {
+		  cout <<"PHG4SimpleEventGenerator::process_event - vertex center"<<reuse_existing_vertex
+			  << vtx_x<<", "<< vtx_y<<", "<< vtx_z<<" cm"
+			  <<endl;
+	  }
 
-    string pdgname = _particle_names[i].first;
-    int pdgcode = get_pdgcode(pdgname);
-    unsigned int nparticles = _particle_names[i].second;
+	  //int vtxindex = -1;
+	  //int trackid = -1;
+	  //for (unsigned int i=0; i<_particle_names.size(); ++i) {
 
-    
-    for (unsigned int j=0; j<nparticles; ++j) {
+	  string pdgname = _particle_names[i].first;
+	  int pdgcode = get_pdgcode(pdgname);
+	  unsigned int nparticles = _particle_names[i].second;
 
-      if ((_vertex_size_width > 0.0)||(_vertex_size_mean != 0.0)) {
 
-	double r = smearvtx(_vertex_size_mean,_vertex_size_width,_vertex_size_func_r);
+	  for (unsigned int j=0; j<nparticles; ++j) {
 
-	double x = 0.0;
-	double y = 0.0;
-	double z = 0.0;
-	gsl_ran_dir_3d(RandomGenerator,&x,&y,&z);
-        x *= r;
-        y *= r;
-        z *= r;
+		  if ((_vertex_size_width > 0.0)||(_vertex_size_mean != 0.0)) {
 
-	vtxindex = _ineve->AddVtx(vtx_x+x,vtx_y+y,vtx_z+z,_t0);
-      } else if ((i==0)&&(j==0)) {
-	vtxindex = _ineve->AddVtx(vtx_x,vtx_y,vtx_z,_t0);
-      }
+			  double r = smearvtx(_vertex_size_mean,_vertex_size_width,_vertex_size_func_r);
 
-      ++trackid;
+			  double x = 0.0;
+			  double y = 0.0;
+			  double z = 0.0;
+			  gsl_ran_dir_3d(RandomGenerator,&x,&y,&z);
+			  x *= r;
+			  y *= r;
+			  z *= r;
 
-      double px = std::numeric_limits<double>::max();
-      double py = std::numeric_limits<double>::max();
-      double pz = std::numeric_limits<double>::max();
-      double angle;
+			  vtxindex = _ineve->AddVtx(vtx_x+x,vtx_y+y,vtx_z+z,_t0);
+		  } else if ((i==0)&&(j==0)) {
+			  vtxindex = _ineve->AddVtx(vtx_x,vtx_y,vtx_z,_t0);
+		  }
 
-      if(std::isnan(_px_min)) {
-				double eta = (_eta_max-_eta_min) * gsl_rng_uniform_pos(RandomGenerator) + _eta_min;
-				double phi = (_phi_max-_phi_min) * gsl_rng_uniform_pos(RandomGenerator) + _phi_min;
-      				cout << "eta of the particle: "<< eta << endl;
+		  ++trackid;
 
-				double pt;
-				if (!std::isnan(_p_min) && !std::isnan(_p_max) && !std::isnan(_p_gaus_width)) {
-		pt =  ((_p_max-_p_min) * gsl_rng_uniform_pos(RandomGenerator) + _p_min + gsl_ran_gaussian(RandomGenerator, _p_gaus_width)) / cosh(eta);
-				} else if (!std::isnan(_pt_min) && !std::isnan(_pt_max) && !std::isnan(_pt_gaus_width)) {
-		pt = (_pt_max-_pt_min) * gsl_rng_uniform_pos(RandomGenerator) + _pt_min + gsl_ran_gaussian(RandomGenerator, _pt_gaus_width);
-				} else {
-		cout << PHWHERE << "Error: neither a p range or pt range was specified" << endl;
-		exit(-1);
-				}
+		  double px = std::numeric_limits<double>::max();
+		  double py = std::numeric_limits<double>::max();
+		  double pz = std::numeric_limits<double>::max();
+		  double angle;
 
-				px = pt*cos(phi);
-				py = pt*sin(phi);
-				pz = pt*sinh(eta);
-      } else {
+		  if(std::isnan(_px_min)) {
+			  double eta = (_eta_max-_eta_min) * gsl_rng_uniform_pos(RandomGenerator) + _eta_min;
+			  double phi = (_phi_max-_phi_min) * gsl_rng_uniform_pos(RandomGenerator) + _phi_min;
+			  cout << "eta of the particle: "<< eta << endl;
 
-	      if (muon_counter == 1) {
-		      px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
-		      py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
-		      pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
-		      muon1.SetXYZM(px, py, pz, 0.1056);
-		      if (! (muon1.Pt() >= _pt_min && muon1.Pt() < _pt_max)) return Fun4AllReturnCodes::ABORTEVENT;
-	      }
-
-	      if (muon_counter == 2) {
-	              //cout <<" _theta_max " << _theta_max << endl;
-		      //cout << "_pt_max: "<< _pt_max << " _pt_min "<< _pt_min <<  endl;
-		      px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
-		      py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
-		      pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
-		      muon2.SetXYZM(px, py, pz, 0.1056);  // Same for the second muon
-		      angle = muon1.Vect().Angle(muon2.Vect()) * (180.0 / M_PI);  // Convert from radians to degrees
-		      if (! (muon1.Pt() > _pt_min && muon1.Pt() < _pt_max)) return Fun4AllReturnCodes::ABORTEVENT;
-		      //cout << "muon- momenta: "<< muon2.Pt() <<endl;
-		      if (! (angle < _theta_max)) {
-		          return Fun4AllReturnCodes::ABORTEVENT;
+			  double pt;
+			  if (!std::isnan(_p_min) && !std::isnan(_p_max) && !std::isnan(_p_gaus_width)) {
+				  pt =  ((_p_max-_p_min) * gsl_rng_uniform_pos(RandomGenerator) + _p_min + gsl_ran_gaussian(RandomGenerator, _p_gaus_width)) / cosh(eta);
+			  } else if (!std::isnan(_pt_min) && !std::isnan(_pt_max) && !std::isnan(_pt_gaus_width)) {
+				  pt = (_pt_max-_pt_min) * gsl_rng_uniform_pos(RandomGenerator) + _pt_min + gsl_ran_gaussian(RandomGenerator, _pt_gaus_width);
+			  } else {
+				  cout << PHWHERE << "Error: neither a p range or pt range was specified" << endl;
+				  exit(-1);
 			  }
 
-		      Double_t mp = 0.938;
-		      Double_t ebeam = 120.;
-		      TLorentzVector p_beam(0., 0., sqrt(ebeam*ebeam - mp*mp), ebeam);
-		      TLorentzVector p_target(0., 0., 0., mp);
-		      TLorentzVector p_cms = p_beam + p_target;
-		      TLorentzVector p_sum = muon1 + muon2;
-		      double mass = p_sum.M();
-		      Double_t s = p_cms.M2();
-		      TVector3 bv_cms = p_cms.BoostVector();
-		      p_sum.Boost(-bv_cms);
-		      double xF = 2.*p_sum.Pz()/TMath::Sqrt(s)/(1. - mass*mass/s);
-		      //cout << "value of xF: "<< xF <<endl;
-		      if (! (xF < 1.0)) return Fun4AllReturnCodes::ABORTEVENT;
-	      }
-      }
+			  px = pt*cos(phi);
+			  py = pt*sin(phi);
+			  pz = pt*sinh(eta);
+		  } else {
 
-      if (verbosity > 0 &&  muon_counter == 2){
-	      cout << "angle of the muons: "<< angle << endl;
-	      cout << "px 1: " << muon1.Px() << endl;
-	      cout << "py 1: " << muon1.Py() << endl;
-	      cout << "pz 1: " << muon1.Pz() << endl;
-	      cout << "px 2: " << muon2.Px() << endl;
-	      cout << "py 2: " << muon2.Py() << endl;
-	      cout << "pz 2: " << muon2.Pz() << endl;
-      }
+			  if (muon_counter == 1) {
+				  px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
+				  py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
+				  pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
+				  muon1.SetXYZM(px, py, pz, 0.1056);
+				  if (! (muon1.Pt() >= _pt_min && muon1.Pt() < _pt_max)) return Fun4AllReturnCodes::ABORTEVENT;
+			  }
 
-      double m = get_mass(pdgcode);
-      double e = sqrt(px*px+py*py+pz*pz+m*m);
+			  if (muon_counter == 2) {
+				  double angle, xF;
+				  int count=0;
+				  do {
+					  count++;
+					  px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
+					  py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
+					  pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
+					  muon2.SetXYZM(px, py, pz, 0.1056); 
+					  //cout << "count "<< count<<"pz "<< pz << endl;
+					  angle = muon1.Vect().Angle(muon2.Vect()) * (180.0 / M_PI);  // Convert from radians to degrees
+					  Double_t mp = 0.938;
+					  Double_t ebeam = 120.;
+					  TLorentzVector p_beam(0., 0., sqrt(ebeam * ebeam - mp * mp), ebeam);
+					  TLorentzVector p_target(0., 0., 0., mp);
+					  TLorentzVector p_cms = p_beam + p_target;
+					  TLorentzVector p_sum = muon1 + muon2;
+					  double mass = p_sum.M();
+					  Double_t s = p_cms.M2();
+					  TVector3 bv_cms = p_cms.BoostVector();
+					  p_sum.Boost(-bv_cms);
+					  xF = 2. * p_sum.Pz() / TMath::Sqrt(s) / (1. - mass * mass / s);
+				  } while (!(muon1.Pt() > _pt_min && muon1.Pt() < _pt_max) || !(angle < _theta_max) || !(xF < 1.0));
+			  }
+		  }
 
-      PHG4Particle *particle = new PHG4Particlev2();
-      particle->set_track_id(trackid);
-      particle->set_vtx_id(vtxindex);
-      particle->set_parent_id(0);
-      particle->set_name(pdgname);
-      particle->set_pid(pdgcode);
-      particle->set_px(px);
-      particle->set_py(py);
-      particle->set_pz(pz);
-      particle->set_e(e);
+		  if (verbosity > 0 &&  muon_counter == 2){
+			  cout << "angle of the muons: "<< angle << endl;
+			  cout << "px 1: " << muon1.Px() << endl;
+			  cout << "py 1: " << muon1.Py() << endl;
+			  cout << "pz 1: " << muon1.Pz() << endl;
+			  cout << "px 2: " << muon2.Px() << endl;
+			  cout << "py 2: " << muon2.Py() << endl;
+			  cout << "pz 2: " << muon2.Pz() << endl;
+		  }
 
-      _ineve->AddParticle(vtxindex, particle);
-      if (embedflag != 0) _ineve->AddEmbeddedParticle(particle,embedflag);
-    }
+		  double m = get_mass(pdgcode);
+		  double e = sqrt(px*px+py*py+pz*pz+m*m);
+
+		  PHG4Particle *particle = new PHG4Particlev2();
+		  particle->set_track_id(trackid);
+		  particle->set_vtx_id(vtxindex);
+		  particle->set_parent_id(0);
+		  particle->set_name(pdgname);
+		  particle->set_pid(pdgcode);
+		  particle->set_px(px);
+		  particle->set_py(py);
+		  particle->set_pz(pz);
+		  particle->set_e(e);
+
+		  _ineve->AddParticle(vtxindex, particle);
+		  if (embedflag != 0) _ineve->AddEmbeddedParticle(particle,embedflag);
+	  }
   }
 
   _evt->set_run_id  (0);
@@ -466,8 +462,8 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
   _mcevt->set_weight       (1.0);
 
   if (verbosity > 0) {
-    _ineve->identify();
-    cout << "======================================================================================" << endl;
+	  _ineve->identify();
+	  cout << "======================================================================================" << endl;
   } 
 
   return Fun4AllReturnCodes::EVENT_OK;
