@@ -11,7 +11,7 @@ echo "njobs=$njobs"
 echo "nevents=$nevents"
 if [ $do_sub == 1 ]; then
     echo "Grid mode."
-    dir_data=/pnfs/e1039/scratch/users/$USER/Fun4AllRUSFileManager/mc_gen
+    dir_data=/pnfs/e1039/scratch/users/$USER/E1039CombGen/mc_gen
     work=$dir_data/$jobname
     ln -nfs $dir_data data # for convenience
 else

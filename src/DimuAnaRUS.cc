@@ -225,13 +225,8 @@ if(true_mode == true){
 	ResetHitBranches();
 	for (unsigned int ii = 0; ii < m_vec_trk->size(); ii++) {
 		SQTrack* trk = m_vec_trk->at(ii);
-
 		if(trk->get_charge() >0) processID_ =14;
 		else processID_ =24;
-
-		cout << "processID_ "<< processID_ << endl;
-		cout << "charge: "<< trk->get_charge() << endl;
-
 		gCharge.push_back(trk->get_charge());
 		gvx.push_back(trk->get_pos_vtx().X());
 		gvy.push_back(trk->get_pos_vtx().Y());
@@ -244,7 +239,6 @@ if(true_mode == true){
 			for (int ihit = 0; ihit < m_hit_vec->size(); ++ihit) {
 				SQHit* hit = m_hit_vec->at(ihit);
 				if(hit->get_track_id() != trk->get_track_id()) continue;
-				cout <<"processID_: in the hit loop "<< processID_ <<endl;
 				hitID.push_back(hit->get_hit_id());
 				trackID.push_back(hit->get_track_id());
 				detectorID.push_back(hit->get_detector_id());
@@ -257,9 +251,6 @@ if(true_mode == true){
 		}
 	}
 }
-
-//cout << "reco mode: "<< reco_mode << endl;
-//std::cout << "Size of m_sq_dim_vec: " << m_sq_dim_vec->size() << std::endl;
 
 if(reco_mode == true){
     ResetRecoBranches();

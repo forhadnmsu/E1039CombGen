@@ -145,7 +145,8 @@ int Fun4Sim(const int nevent = 10)
 		else
 			genp->set_pxpypz_range(-6.0,6.0, -4,4, 10, 80);
 
-		//genp->set_opening_angle_range(0.0, 1.0);
+		genp->set_max_opening_angle(2.0);
+		genp->set_pt_range(0.0, 3.0);
 		//genp->Verbosity(1);
 		se->registerSubsystem(genp);
 	}
@@ -340,7 +341,6 @@ int Fun4Sim(const int nevent = 10)
         dimuAna->SetOutputFileName("RUS.root");
         dimuAna->SetSaveOnlyDimuon(true);
         dimuAna->SetMCTrueMode(true);
-	dimuAna->SetMCDimuonMode(true);
         dimuAna->SetRecoMode(true);
         se->registerSubsystem(dimuAna);
 	const bool count_only_good_events = true;

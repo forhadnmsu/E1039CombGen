@@ -58,7 +58,6 @@ PHG4E1039TrackGen::PHG4E1039TrackGen(const string &name):
 	_px_min(NAN), _px_max(NAN),
 	_py_min(NAN), _py_max(NAN),
 	_pz_min(NAN), _pz_max(NAN),
-  _theta_min(NAN),
   _theta_max(NAN),
   _eventcount(0),
   _ineve(NULL), 
@@ -398,18 +397,20 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
 		      py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
 		      pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
 		      muon1.SetXYZM(px, py, pz, 0.1056);
-		      if (! (muon1.Pt() < 3.0)) return Fun4AllReturnCodes::ABORTEVENT;
+		      if (! (muon1.Pt() >= _pt_min && muon1.Pt() < _pt_max)) return Fun4AllReturnCodes::ABORTEVENT;
 	      }
 
 	      if (muon_counter == 2) {
+	              //cout <<" _theta_max " << _theta_max << endl;
+		      //cout << "_pt_max: "<< _pt_max << " _pt_min "<< _pt_min <<  endl;
 		      px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
 		      py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
 		      pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
 		      muon2.SetXYZM(px, py, pz, 0.1056);  // Same for the second muon
 		      angle = muon1.Vect().Angle(muon2.Vect()) * (180.0 / M_PI);  // Convert from radians to degrees
-		      if (! (muon2.Pt() < 3.0)) return Fun4AllReturnCodes::ABORTEVENT;
+		      if (! (muon1.Pt() > _pt_min && muon1.Pt() < _pt_max)) return Fun4AllReturnCodes::ABORTEVENT;
 		      //cout << "muon- momenta: "<< muon2.Pt() <<endl;
-		      if (! (angle < 2)) {
+		      if (! (angle < _theta_max)) {
 		          return Fun4AllReturnCodes::ABORTEVENT;
 			  }
 
@@ -489,8 +490,8 @@ void PHG4E1039TrackGen::set_pxpypz_range(const double x_min,
 	_pz_min = z_min; _pz_max = z_max;
 }
 
-void PHG4E1039TrackGen::set_opening_angle_range(const double x_min, const double x_max){
-        _theta_min = x_min; _theta_max = x_max;
+void PHG4E1039TrackGen::set_max_opening_angle(const double x_max){
+         _theta_max = x_max;
 }
 
 

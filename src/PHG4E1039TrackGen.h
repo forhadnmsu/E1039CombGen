@@ -76,7 +76,7 @@ public:
 			const double y_min, const double y_max,
 			const double z_min, const double z_max
 			);
-  void set_opening_angle_range(const double x_min, const double x_max);
+  void set_max_opening_angle(const double x_max);
    //! Enable legacy vertex gen
    void enableLegacyVtxGen() { _legacy_vertexgenerator = true; } //Abi
 
