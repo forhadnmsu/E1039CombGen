@@ -402,14 +402,11 @@ int PHG4E1039TrackGen::process_event(PHCompositeNode *topNode) {
 
 			  if (muon_counter == 2) {
 				  double angle, xF;
-				  int count=0;
 				  do {
-					  count++;
 					  px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
 					  py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
 					  pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
 					  muon2.SetXYZM(px, py, pz, 0.1056); 
-					  //cout << "count "<< count<<"pz "<< pz << endl;
 					  angle = muon1.Vect().Angle(muon2.Vect()) * (180.0 / M_PI);  // Convert from radians to degrees
 					  Double_t mp = 0.938;
 					  Double_t ebeam = 120.;
