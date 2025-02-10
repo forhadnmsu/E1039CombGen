@@ -343,7 +343,6 @@ int Fun4Sim(const int nevent = 10)
 	dimuAna->SetMCDimuonMode(true);
         dimuAna->SetRecoMode(true);
         se->registerSubsystem(dimuAna);
-//      se->registerSubsystem(new DimuAnaRUS());
 	const bool count_only_good_events = true;
 	se->run(nevent, count_only_good_events);
 	PHGeomUtility::ExportGeomtry(se->topNode(),"geom.root");
