@@ -356,6 +356,6 @@ void DimuAnaRUS::ResetRecoBranches() {
 	rec_dimu_xf.clear();
 	rec_dimu_x1.clear();
 	rec_dimu_x2.clear();
-	top_bot;
-	bot_top;
+	top_bot.clear();
+	bot_top.clear();
 }

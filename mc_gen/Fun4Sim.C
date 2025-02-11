@@ -293,7 +293,6 @@ int Fun4Sim(const int nevent = 10)
 	//se->registerSubsystem(evt_filter);
 	// Tracking module
 	// input - we need a dummy to drive the event loop
-
 	SQReco* reco = new SQReco();
 	reco->Verbosity(1);
 	reco->set_legacy_rec_container(false); 

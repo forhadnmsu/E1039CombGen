@@ -364,13 +364,18 @@ int PHG4E1039TrackPairGen::process_event(PHCompositeNode *topNode) {
 		  double pz = std::numeric_limits<double>::max();
 		  double angle;
 
+		  int iteration = 0;
+		  const int max_iterations = 100;
 		  if (muon_counter == 1) {
 		  	do {
 			  px = (_px_max - _px_min) * gsl_rng_uniform_pos(RandomGenerator) + _px_min;
 			  py = (_py_max - _py_min) * gsl_rng_uniform_pos(RandomGenerator) + _py_min;
 			  pz = (_pz_max - _pz_min) * gsl_rng_uniform_pos(RandomGenerator) + _pz_min;
 			  muon1.SetXYZM(px, py, pz, 0.1056);
-			}while (!(muon1.Pt() > _pt_min && muon1.Pt() < _pt_max));
+			  iteration++;
+			}while (!(muon1.Pt() > _pt_min && muon1.Pt() < _pt_max && iteration < max_iterations));
+			//cout << "mu+  first iterations: "<< iteration <<endl; 
+			iteration=0;
 		  }
 
 		  if (muon_counter == 2) {
@@ -392,8 +397,9 @@ int PHG4E1039TrackPairGen::process_event(PHCompositeNode *topNode) {
 				  TVector3 bv_cms = p_cms.BoostVector();
 				  p_sum.Boost(-bv_cms);
 				  xF = 2. * p_sum.Pz() / TMath::Sqrt(s) / (1. - mass * mass / s);
-			  } while (!(muon2.Pt() > _pt_min && muon2.Pt() < _pt_max) || !(angle < _theta_max) || !(xF < 1.0));
-			  //cout << "pt of the muon2: "<< muon2.Pt() << "angle: "<< angle << endl;
+				  }while (!((muon2.Pt() >= _pt_min && muon2.Pt() <= _pt_max) && angle < _theta_max && xF < 1.0) && iteration < max_iterations);
+			  //cout <<"iterations mu second track: "<< iteration <<"pt of the muon2: "<< muon2.Pt() << "angle: "<< angle <<endl;
+			  iteration=0;
 		  }
 		  if (verbosity > 0 &&  muon_counter == 2){
 			  cout << "angle of the muons: "<< angle << endl;
