@@ -33,7 +33,7 @@ for (( id=1; id<=$njobs; id++ )) ; do
 
   if [ $do_sub == 1 ]; then
     CMD="/exp/seaquest/app/software/script/jobsub_submit_spinquest.sh"
-    CMD+=" --expected-lifetime='medium'" # medium=8h, short=3h, long=23h
+    CMD+=" --expected-lifetime='long'" # medium=8h, short=3h, long=23h
     CMD+=" -L $work/$id/log_gridrun.txt"
     CMD+=" -f $work/input.tar.gz"
     CMD+=" -d OUTPUT $work/$id/out"

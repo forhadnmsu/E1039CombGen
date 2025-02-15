@@ -51,6 +51,10 @@ class DimuAnaRUS: public SubsysReco {
 
 	void SetSaveOnlyDimuon(bool enable) { saveDimuonOnly = enable; }
 
+	unsigned int EncodeProcess(int processID, int sourceFlag);
+	static int DecodeSourceFlag(unsigned int encoded);
+	static int DecodeProcessID(unsigned int encoded);
+
 	DimuAnaRUS(const std::string& name="DimuAnaRUS");
 	virtual ~DimuAnaRUS();
 	int Init(PHCompositeNode *startNode);
@@ -81,16 +85,17 @@ class DimuAnaRUS: public SubsysReco {
 	*/
 
 	std::vector<int> hitID;
-	std::vector<int> trackID;
+	std::vector<int> processID;
+	std::vector<int> hit_trackID;
 	std::vector<int> detectorID;
 	std::vector<int> elementID;
 	std::vector<double> tdcTime;
 	std::vector<double> driftDistance;
-	std::vector<int> processID;
-	std::vector<int> sourceFlag;
 	//std::vector<bool> hitsInTime;
 	// True track data
 	std::vector<int> gCharge;
+	//std::vector<int> sourceFlag;
+	std::vector<int> trackID;
 	std::vector<double> gvx;
 	std::vector<double> gvy;
 	std::vector<double> gvz;

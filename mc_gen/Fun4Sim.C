@@ -41,11 +41,8 @@ int Fun4Sim(const int nevent = 10)
 	const double KMAGSTR = -1.025;
 
 	//! Particle generator flag.  Only one of these must be true.
-	const bool gen_pythia8  = false;
-	const bool gen_cosmic   = false;
 	const bool gen_particle = true;
 	const bool read_hepmc   = false;
-	const bool gen_e906dim =  false; // cf. SQPrimaryParticleGen
 
 	//! Use SQPrimaryVertexGen or not.
 	const bool SQ_vtx_gen = true;
@@ -58,12 +55,6 @@ int Fun4Sim(const int nevent = 10)
 	rc->set_DoubleFlag("SIGY_BEAM", 0.3);
 	rc->set_DoubleFlag("Z_UPSTREAM", -700.);
 
-	if(gen_cosmic) {
-		rc->init("cosmic");
-		rc->set_BoolFlag("COARSE_MODE", true);
-		rc->set_DoubleFlag("KMAGSTR", 0.);
-		rc->set_DoubleFlag("FMAGSTR", 0.);
-	}
 	if(SQ_vtx_gen) { // cf. SQPrimaryVertexGen
 		rc->set_CharFlag("VTX_GEN_MATERIAL_MODE", "Dump"); // All, Target, Dump, TargetDumpGap or Manual
 		//rc->set_CharFlag("VTX_GEN_MATERIAL_MODE", "Target"); // All, Target, Dump, TargetDumpGap or Manual
@@ -85,37 +76,7 @@ int Fun4Sim(const int nevent = 10)
 	se->Verbosity(0);
 
 
-	// pythia8
-	if(gen_pythia8) {    
-		PHPythia8 *pythia8 = new PHPythia8();
-		//pythia8->Verbosity(99);
-		pythia8->set_config_file("phpythia8_DY.cfg");
-		//pythia8->set_config_file("phpythia8_Jpsi.cfg"); // Jpsi, Jpsi_direct, psip
-		if(SQ_vtx_gen) pythia8->enableLegacyVtxGen();
-		else{
-			pythia8->set_vertex_distribution_mean(0, 0, target_coil_pos_z, 0);
-		} 
-		pythia8->set_embedding_id(1);
-		se->registerSubsystem(pythia8);
-
-		pythia8->set_trigger_AND();
-
-		PHPy8ParticleTrigger* trigger_mup = new PHPy8ParticleTrigger();
-		trigger_mup->AddParticles("-13");
-		//trigger_mup->SetPxHighLow(7, 0.5);
-		//trigger_mup->SetPyHighLow(6, -6);
-		trigger_mup->SetPzHighLow(120, 10);
-		pythia8->register_trigger(trigger_mup);
-
-		PHPy8ParticleTrigger* trigger_mum = new PHPy8ParticleTrigger();
-		trigger_mum->AddParticles("13");
-		//trigger_mum->SetPxHighLow(-0.5, 7);
-		//trigger_mum->SetPyHighLow(6, -6);
-		trigger_mum->SetPzHighLow(120, 10);
-		pythia8->register_trigger(trigger_mum);
-	}
-
-	if(gen_pythia8 || read_hepmc) {
+	if(read_hepmc) {
 		HepMCNodeReader *hr = new HepMCNodeReader();
 		hr->set_particle_filter_on(true);
 		hr->insert_particle_filter_pid(13);
@@ -143,9 +104,9 @@ int Fun4Sim(const int nevent = 10)
 		if(FMAGSTR>0)
 			genp->set_pxpypz_range(-6,6, -3,3, 10,100);
 		else
-			genp->set_pxpypz_range(-4.0,4.0, -4,4, 10, 80);
-		genp->set_max_opening_angle(2.0);
-		genp->set_pt_range(0.0, 3.0);
+			genp->set_pxpypz_range(-4.0,4.0, -4,4, 30, 90);
+		genp->set_max_opening_angle(10.0);
+		//genp->set_pt_range(0.0, 3.0);
 		//genp->Verbosity(1);
 		se->registerSubsystem(genp);
 	}
@@ -176,39 +137,6 @@ int Fun4Sim(const int nevent = 10)
 	}
 */
 
-
-	// E906LegacyGen
-	if(gen_e906dim){
-		SQPrimaryParticleGen *e906legacy = new  SQPrimaryParticleGen();
-		const bool pythia_gen = false;
-		const bool drellyan_gen = false;
-		const bool JPsi_gen = true;
-		const bool Psip_gen = false;  
-
-		if(drellyan_gen){
-			e906legacy->set_xfRange(0.1, 0.5); //[-1.,1.]
-			e906legacy->set_massRange(1.0, 8.0);
-			e906legacy->enableDrellYanGen();
-		}
-		if(Psip_gen){ 
-			e906legacy->set_xfRange(0.1, 0.5); //[-1.,1.]
-			e906legacy->enablePsipGen();
-		}
-		if(JPsi_gen){
-			e906legacy->set_xfRange(0.1, 0.5); //[-1.,1.]
-			e906legacy->enableJPsiGen();
-		}
-		if(pythia_gen){ 
-			e906legacy->enablePythia();
-			e906legacy->set_config_file("phpythia8_DY.cfg");
-		}
-		se->registerSubsystem(e906legacy);
-	}
-
-	if(gen_cosmic) {
-		SQCosmicGen* cosmicGen = new SQCosmicGen();
-		se->registerSubsystem(cosmicGen);
-	}
 
 	// Fun4All G4 module
 	PHG4Reco *g4Reco = new PHG4Reco();
@@ -293,6 +221,8 @@ int Fun4Sim(const int nevent = 10)
 	//se->registerSubsystem(evt_filter);
 	// Tracking module
 	// input - we need a dummy to drive the event loop
+
+	/*
 	SQReco* reco = new SQReco();
 	reco->Verbosity(1);
 	reco->set_legacy_rec_container(false); 
@@ -309,6 +239,7 @@ int Fun4Sim(const int nevent = 10)
 	SQVertexing* vtx = new SQVertexing();
 	vtx->Verbosity(1);
 	se->registerSubsystem(vtx);
+	*/
 	if(read_hepmc) {
 		Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager("HEPMCIN");
 		in->Verbosity(10);
@@ -328,18 +259,12 @@ int Fun4Sim(const int nevent = 10)
 	Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", "DST.root");
 	se->registerOutputManager(out);
 
-	//if(gen_pythia8 && !read_hepmc) {
-	//  Fun4AllHepMCOutputManager *out = new Fun4AllHepMCOutputManager("HEPMCOUT", "hepmcout.txt");
-	//  out->set_embedding_id(1);
-	//  se->registerOutputManager(out);
-	//}
-
 	DimuAnaRUS* dimuAna = new DimuAnaRUS();
         dimuAna->SetTreeName("tree");
         dimuAna->SetOutputFileName("RUS.root");
-        dimuAna->SetSaveOnlyDimuon(true);
+        dimuAna->SetSaveOnlyDimuon(false);
         dimuAna->SetMCTrueMode(true);
-        dimuAna->SetRecoMode(true);
+        dimuAna->SetRecoMode(false);
         se->registerSubsystem(dimuAna);
 	const bool count_only_good_events = true;
 	se->run(nevent, count_only_good_events);

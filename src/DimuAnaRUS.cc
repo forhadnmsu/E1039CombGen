@@ -82,18 +82,16 @@ int DimuAnaRUS::InitRun(PHCompositeNode* startNode)
 	m_tree->Branch("nimTrigger", nimTrigger, "nimTrigger[5]/I");
 */
 	m_tree->Branch("hitID", &hitID);
-	m_tree->Branch("trackID", &trackID);
-	//m_tree->Branch("processID", &processID);
-	//m_tree->Branch("sourceFlag", &sourceFlag);
+	m_tree->Branch("hit_trackID", &hit_trackID);
+	m_tree->Branch("processID", &processID);
 	m_tree->Branch("detectorID", &detectorID);
 	m_tree->Branch("elementID", &elementID);
 	m_tree->Branch("tdcTime", &tdcTime);
 	m_tree->Branch("driftDistance", &driftDistance);
-	m_tree->Branch("processID", &processID);
-	m_tree->Branch("sourceFlag", &sourceFlag);
 
 	if (true_mode==true){
 		m_tree->Branch("gCharge", &gCharge);
+		m_tree->Branch("trackID", &trackID);
 		m_tree->Branch("gvx", &gvx);
 		m_tree->Branch("gvy", &gvy);
 		m_tree->Branch("gvz", &gvz);
@@ -217,40 +215,48 @@ int DimuAnaRUS::process_event(PHCompositeNode* startNode)
     	rfIntensity[i + 16] = m_evt->get_qie_rf_intensity(i);
 }
 */
-int processID_;
-int sourceFlag_= 2;
 
 if(true_mode == true){
 	ResetTrueBranches();
 	ResetHitBranches();
 	for (unsigned int ii = 0; ii < m_vec_trk->size(); ii++) {
 		SQTrack* trk = m_vec_trk->at(ii);
-		if(trk->get_charge() >0) processID_ =14;
-		else processID_ =24;
+
 		gCharge.push_back(trk->get_charge());
+		trackID.push_back(trk->get_track_id());
 		gvx.push_back(trk->get_pos_vtx().X());
 		gvy.push_back(trk->get_pos_vtx().Y());
 		gvz.push_back(trk->get_pos_vtx().Z());
 		gpx.push_back(trk->get_mom_vtx().Px());
 		gpy.push_back(trk->get_mom_vtx().Py());
 		gpz.push_back(trk->get_mom_vtx().Pz());
-
 		if (m_hit_vec) {
 			for (int ihit = 0; ihit < m_hit_vec->size(); ++ihit) {
 				SQHit* hit = m_hit_vec->at(ihit);
 				if(hit->get_track_id() != trk->get_track_id()) continue;
+				int processID_;
+				if(trk->get_charge() >0) processID_ =14;
+				else processID_ =24;
+				int sourceFlag_= 2;
+				unsigned int encodedValue = EncodeProcess(processID_, sourceFlag_);
+				cout << "charge: "<< trk->get_charge() <<endl;
+				cout << "encodedValue: "<< encodedValue<< endl;
+				cout << "DecodeSourceFlag: "<< DecodeSourceFlag(encodedValue) << endl;
+				cout << "DecodeProcessID: "<< DecodeProcessID(encodedValue) << endl;
+				processID.push_back(encodedValue);
 				hitID.push_back(hit->get_hit_id());
-				trackID.push_back(hit->get_track_id());
+				hit_trackID.push_back(hit->get_track_id());
 				detectorID.push_back(hit->get_detector_id());
 				elementID.push_back(hit->get_element_id());
 				tdcTime.push_back(hit->get_tdc_time());
 				driftDistance.push_back(hit->get_drift_distance());
-				processID.push_back(processID_);
-				sourceFlag.push_back(sourceFlag_);
 			}   
 		}
 	}
 }
+
+//cout << "reco mode: "<< reco_mode << endl;
+//std::cout << "Size of m_sq_dim_vec: " << m_sq_dim_vec->size() << std::endl;
 
 if(reco_mode == true){
     ResetRecoBranches();
@@ -312,17 +318,17 @@ int DimuAnaRUS::End(PHCompositeNode* startNode)
 
 void DimuAnaRUS::ResetHitBranches() {
  	hitID.clear();
- 	trackID.clear();
+	processID.clear();
+ 	hit_trackID.clear();
 	detectorID.clear();
 	elementID.clear();
 	tdcTime.clear();
 	driftDistance.clear();
-	processID.clear();
-	sourceFlag.clear();
 }
 void DimuAnaRUS::ResetTrueBranches() {
 	//mc variables
 	gCharge.clear();
+ 	trackID.clear();
 	gvx.clear();
 	gvy.clear();
 	gvz.clear();
@@ -356,6 +362,19 @@ void DimuAnaRUS::ResetRecoBranches() {
 	rec_dimu_xf.clear();
 	rec_dimu_x1.clear();
 	rec_dimu_x2.clear();
-	top_bot.clear();
-	bot_top.clear();
+	top_bot;
+	bot_top;
 }
+
+unsigned int DimuAnaRUS::EncodeProcess(int processID, int sourceFlag) {
+        return ( (sourceFlag & 0x3) << 5 ) |  // 2 bits for sourceFlag (1-3)
+	                (processID & 0x1F);            // 5 bits for processID (11-24)
+			               }
+
+int DimuAnaRUS::DecodeSourceFlag(unsigned int encoded) { 
+	return (encoded >> 5) & 0x3;
+}
+int DimuAnaRUS::DecodeProcessID(unsigned int encoded) {
+	return encoded & 0x1F;
+}
+

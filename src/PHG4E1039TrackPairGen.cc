@@ -50,9 +50,9 @@ PHG4E1039TrackPairGen::PHG4E1039TrackPairGen(const string &name):
   _phi_min(-M_PI),
   _phi_max(M_PI),
   _pt_min(0.0),
-  _pt_max(10.0),
+  _pt_max(5.0),
   _pt_gaus_width(0.0),
-  _p_min(NAN),
+  _p_min(0.0),
   _p_max(NAN),
   _p_gaus_width(NAN),
 	_px_min(NAN), _px_max(NAN),
@@ -375,8 +375,10 @@ int PHG4E1039TrackPairGen::process_event(PHCompositeNode *topNode) {
 			  iteration++;
 			}while (!(muon1.Pt() > _pt_min && muon1.Pt() < _pt_max && iteration < max_iterations));
 			//cout << "mu+  first iterations: "<< iteration <<endl; 
-			iteration=0;
 		  }
+
+		  cout << "iteration  at loop 1"<< iteration <<endl;
+		  if((iteration==100))return Fun4AllReturnCodes::ABORTEVENT;
 
 		  if (muon_counter == 2) {
 			  double angle, xF;
@@ -398,9 +400,12 @@ int PHG4E1039TrackPairGen::process_event(PHCompositeNode *topNode) {
 				  p_sum.Boost(-bv_cms);
 				  xF = 2. * p_sum.Pz() / TMath::Sqrt(s) / (1. - mass * mass / s);
 				  }while (!((muon2.Pt() >= _pt_min && muon2.Pt() <= _pt_max) && angle < _theta_max && xF < 1.0) && iteration < max_iterations);
-			  //cout <<"iterations mu second track: "<< iteration <<"pt of the muon2: "<< muon2.Pt() << "angle: "<< angle <<endl;
+			  	//cout <<"iterations mu second track: "<< iteration <<"pt of the muon2: "<< muon2.Pt() << "angle: "<< angle <<endl;
 			  iteration=0;
 		  }
+		  if((iteration==100))return Fun4AllReturnCodes::ABORTEVENT;
+		  cout << "iteration  at loop 2"<< iteration <<endl;
+		  iteration=0;
 		  if (verbosity > 0 &&  muon_counter == 2){
 			  cout << "angle of the muons: "<< angle << endl;
 			  cout << "px 1: " << muon1.Px() << endl;
