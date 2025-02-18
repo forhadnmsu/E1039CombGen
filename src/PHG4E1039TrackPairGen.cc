@@ -377,7 +377,6 @@ int PHG4E1039TrackPairGen::process_event(PHCompositeNode *topNode) {
 			//cout << "mu+  first iterations: "<< iteration <<endl; 
 		  }
 
-		  cout << "iteration  at loop 1"<< iteration <<endl;
 		  if((iteration==100))return Fun4AllReturnCodes::ABORTEVENT;
 
 		  if (muon_counter == 2) {
@@ -404,7 +403,6 @@ int PHG4E1039TrackPairGen::process_event(PHCompositeNode *topNode) {
 			  iteration=0;
 		  }
 		  if((iteration==100))return Fun4AllReturnCodes::ABORTEVENT;
-		  cout << "iteration  at loop 2"<< iteration <<endl;
 		  iteration=0;
 		  if (verbosity > 0 &&  muon_counter == 2){
 			  cout << "angle of the muons: "<< angle << endl;

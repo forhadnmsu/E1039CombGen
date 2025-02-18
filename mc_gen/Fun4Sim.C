@@ -105,38 +105,11 @@ int Fun4Sim(const int nevent = 10)
 			genp->set_pxpypz_range(-6,6, -3,3, 10,100);
 		else
 			genp->set_pxpypz_range(-4.0,4.0, -4,4, 30, 90);
-		genp->set_max_opening_angle(10.0);
+		genp->set_max_opening_angle(3.0);
 		//genp->set_pt_range(0.0, 3.0);
 		//genp->Verbosity(1);
 		se->registerSubsystem(genp);
 	}
-
-/*
-	if(gen_particle) {
-		PHG4E1039TrackPairGen *genm = new PHG4E1039TrackPairGen("MUM");
-		genm->set_seed(12);
-		genm->add_particles("mu-", nmu);  // mu+,e+,proton,pi+,Upsilon
-		if (SQ_vtx_gen) genm->enableLegacyVtxGen();
-		else{
-			genm->set_vertex_distribution_function(PHG4E1039TrackPairGen::Uniform,
-					PHG4E1039TrackPairGen::Uniform,
-					PHG4E1039TrackPairGen::Uniform);
-			genm->set_vertex_distribution_mean(0.0, 0.0, target_coil_pos_z);
-			genm->set_vertex_distribution_width(0.0, 0.0, 0.0);
-			genm->set_vertex_size_function(PHG4E1039TrackPairGen::Uniform);
-			genm->set_vertex_size_parameters(0.0, 0.0);
-		}
-		if(FMAGSTR>0)
-			genm->set_pxpypz_range(-6,6, -3,3, 10,100);
-		else
-			{genm->set_pxpypz_range(-6,6, -4,4, 30,60);
-			genm->set_eta_range(6.0, 8.0);}
-
-		genm->Verbosity(2);
-		se->registerSubsystem(genm);
-	}
-*/
-
 
 	// Fun4All G4 module
 	PHG4Reco *g4Reco = new PHG4Reco();

@@ -239,10 +239,10 @@ if(true_mode == true){
 				else processID_ =24;
 				int sourceFlag_= 2;
 				unsigned int encodedValue = EncodeProcess(processID_, sourceFlag_);
-				cout << "charge: "<< trk->get_charge() <<endl;
-				cout << "encodedValue: "<< encodedValue<< endl;
-				cout << "DecodeSourceFlag: "<< DecodeSourceFlag(encodedValue) << endl;
-				cout << "DecodeProcessID: "<< DecodeProcessID(encodedValue) << endl;
+				//cout << "charge: "<< trk->get_charge() <<endl;
+				//cout << "encodedValue: "<< encodedValue<< endl;
+				//cout << "DecodeSourceFlag: "<< DecodeSourceFlag(encodedValue) << endl;
+				//cout << "DecodeProcessID: "<< DecodeProcessID(encodedValue) << endl;
 				processID.push_back(encodedValue);
 				hitID.push_back(hit->get_hit_id());
 				hit_trackID.push_back(hit->get_track_id());
